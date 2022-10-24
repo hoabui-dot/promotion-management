@@ -5,15 +5,20 @@ import Button from '@mui/material/Button';
 import SearchIcon from '@mui/icons-material/Search';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import CreatePromotion from '../../components/CreatePromotion/CreatePromotion';
+import DetailPromotion from '../../components/DetailPromotion/DetailPromotion';
+import Popup from 'reactjs-popup';
 
 export const Promotions = () => {
   const promotions = useTracker(() => Promotion.find({}).fetch());
   const [isStatus, setIsStatus] = useState(promotions);
 
-  console.log(promotions);
-
   const onDelete = _id => {
     Promotion.remove(_id);
+  };
+
+  const contentStyle = {
+    width: '90%',
+    maxWidth: '900px',
   };
 
   const handleChangeInputSearch = event => {
@@ -30,10 +35,35 @@ export const Promotions = () => {
   return (
     <div className='container'>
       <div className='title'>
-        <Button className='back_btn' variant='outlined'>
+        <Button className='btn_back' variant='outlined'>
           <ArrowBackIosIcon />
         </Button>
         <h1>PROMOTION</h1>
+      </div>
+      <div className='btn_page'>
+        <Button variant='contained'>Single promotion</Button>
+        <Button variant='contained'>Promotion series</Button>
+        <Button variant='contained'>bRewards</Button>
+        <Button variant='contained'>Campaign</Button>
+      </div>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          marginTop: '20px',
+          marginBottom: '30px',
+        }}
+      >
+        <Button
+          variant='contained'
+          color='success'
+          style={{ textTransform: 'capitalize' }}
+        >
+          List single promotion
+        </Button>
+        <div className='filter_createPromotion'>
+          <CreatePromotion />
+        </div>
       </div>
       <div className='promotion_filter'>
         <div className='filter_pageValue'>
@@ -52,14 +82,7 @@ export const Promotions = () => {
         <Button className='btn_search' variant='contained' color='success'>
           <SearchIcon />
         </Button>
-        <select className='filter_status' onChange={e => handleSelectStatus(e)}>
-          <option value='all'>Tất cả</option>
-          <option value='active'>Đang diễn ra</option>
-          <option value='finished'>Đã kết thúc</option>
-        </select>
-        <div className='filter_createPromotion'>
-          <CreatePromotion />
-        </div>
+        <div className='filter_result'>10 kết quả</div>
       </div>
       <div className='promotion_wrap'>
         <ul className='promotion promotion--title'>
@@ -84,38 +107,55 @@ export const Promotions = () => {
             const endDate = new Date(data.endDate);
             const createdAt = new Date(data.createdAt);
             return (
-              <li key={data._id}>
-                <div className='promotion_list'>
-                  <div className='item item--code item--codeColor'>
-                    {data.code}
-                  </div>
-                  <div className='item item--desc'>{data.description}</div>
-                  <div className='item item--promotionType'>
-                    {data.typeOfPromotion}
-                  </div>
-                  <div className='item item--valueType'>{data.value.type}</div>
-                  <div className='item item--value'>{data.value.maxValue}đ</div>
-                  <div className='item item--startDate'>
-                    {startDate.getHours()}:{startDate.getMinutes()}:
-                    {startDate.getSeconds()} {startDate.getDate()}/
-                    {startDate.getMonth()}/{startDate.getFullYear()}
-                  </div>
-                  <div className='item item--endDate'>
-                    {endDate.getHours()}:{endDate.getMinutes()}:
-                    {endDate.getSeconds()} {endDate.getDate()}/
-                    {endDate.getMonth()}/{endDate.getFullYear()}
-                  </div>
-                  <div className='item item--number'>0/{data.limit}</div>
-                  <div className='item item--status'>
-                    <span>expired</span>
-                  </div>
-                  <div className='item item--createdAt'>
-                    {createdAt.getHours()}:{createdAt.getMinutes()}:
-                    {createdAt.getSeconds()} {createdAt.getDate()}/
-                    {createdAt.getMonth()}/{createdAt.getFullYear()}
-                  </div>
-                </div>
-              </li>
+              <Popup
+                trigger={
+                  <li key={data._id}>
+                    <div className='promotion_list'>
+                      <div className='item item--code item--codeColor'>
+                        {data.code}
+                      </div>
+                      <div className='item item--desc'>{data.description}</div>
+                      <div className='item item--promotionType'>
+                        {data.typeOfPromotion}
+                      </div>
+                      <div className='item item--valueType'>
+                        {data.value.type}
+                      </div>
+                      <div className='item item--value'>
+                        {data.value.maxValue}đ
+                      </div>
+                      <div className='item item--startDate'>
+                        {startDate.getHours()}:{startDate.getMinutes()}:
+                        {startDate.getSeconds()} {startDate.getDate()}/
+                        {startDate.getMonth()}/{startDate.getFullYear()}
+                      </div>
+                      <div className='item item--endDate'>
+                        {endDate.getHours()}:{endDate.getMinutes()}:
+                        {endDate.getSeconds()} {endDate.getDate()}/
+                        {endDate.getMonth()}/{endDate.getFullYear()}
+                      </div>
+                      <div className='item item--number'>0/{data.limit}</div>
+                      <div className='item item--status'>
+                        <span>expired</span>
+                      </div>
+                      <div className='item item--createdAt'>
+                        {createdAt.getHours()}:{createdAt.getMinutes()}:
+                        {createdAt.getSeconds()} {createdAt.getDate()}/
+                        {createdAt.getMonth()}/{createdAt.getFullYear()}
+                      </div>
+                    </div>
+                  </li>
+                }
+                modal
+                contentStyle={contentStyle}
+              >
+                <DetailPromotion
+                  data={data}
+                  startDate={startDate}
+                  endDate={endDate}
+                  createdAt={createdAt}
+                />
+              </Popup>
             );
           })}
         </ul>

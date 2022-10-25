@@ -19,6 +19,9 @@ const UpdatePromotion = () => {
           startDate: `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`,
           applyDate: `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`,
           person: '',
+          number: 1,
+          typeValue: '',
+          value: 0,
         }}
         onSubmit={(values, { setSubmitting }) => {
           setTimeout(() => {
@@ -156,16 +159,56 @@ const UpdatePromotion = () => {
                     <option value='cleanSofa'>Vệ sinh sofa</option>
                   </Field>
                 </div>
+                <div className='form_item'>
+                  <p className='form_label'>
+                    <span style={{ color: 'red' }}>*</span> Số lượng
+                  </p>
+                  <Field
+                    className='form_input'
+                    type='number'
+                    name='number'
+                    value={values.number}
+                  />
+                </div>
+                <div className='form_value'>
+                  <h3>GIÁ TRỊ</h3>
+                  <div className='form_item'>
+                    <p className='form_label'>Loại giá trị</p>
+                    <Field
+                      as='select'
+                      className='form_select'
+                      value={values.typeValue}
+                    >
+                      <option value='money'>MONEY</option>
+                    </Field>
+                  </div>
+                  <div className='form_item'>
+                    <p className='form_label'>Giá trị</p>
+                    <Field
+                      type='number'
+                      name='value'
+                      className='form_input'
+                      value={values.value}
+                    />
+                  </div>
+                </div>
+                <label className='blocked'>
+                  <Field type='checkbox' name='block' /> <span>Block</span>
+                </label>
               </div>
             </div>
-            <Button
-              variant='contained'
-              color='success'
-              type='submit'
-              disabled={isSubmitting}
-            >
-              Submit
-            </Button>
+            <div className='form_item'>
+              <p className='form_label'>
+                <span style={{ color: 'red' }}>*</span> Mô tả
+              </p>
+              <Field
+                as='textarea'
+                name='description'
+                value={values.description}
+                placeholder='hello...'
+                className='form_textarea'
+              />
+            </div>
           </form>
         )}
       </Formik>

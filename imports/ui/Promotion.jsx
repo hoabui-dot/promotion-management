@@ -25,6 +25,10 @@ export const Promotions = () => {
       setIsStatus(promotions);
     }
   };
+  const handleRemove = id => {
+    Promotion.remove(id);
+    setIsPopup(false);
+  };
 
   return (
     <div className='container'>
@@ -186,6 +190,31 @@ export const Promotions = () => {
                         ) : (
                           <UpdatePromotion />
                         )}
+                        <div className='modal_footer'>
+                          <Button
+                            variant='contained'
+                            color='error'
+                            onClick={() => handleRemove(data._id)}
+                          >
+                            Xóa
+                          </Button>
+                          <div className='modal_wrapBtn'>
+                            <Button
+                              variant='outlined'
+                              onClick={() => setIsPopup(false)}
+                              style={{
+                                marginRight: '15px',
+                                border: '1px solid rgb(100,100,100)',
+                                color: 'rgb(100,100,100)',
+                              }}
+                            >
+                              Hủy
+                            </Button>
+                            <Button variant='contained' color='success'>
+                              Cập nhật
+                            </Button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>

@@ -10,10 +10,6 @@ const DetailInformation = ({
   setIsPopup,
   id,
 }) => {
-  const handleRemove = () => {
-    promotion.remove(id);
-    setIsPopup(false);
-  };
   return (
     <>
       <div className='general'>
@@ -135,27 +131,6 @@ const DetailInformation = ({
               <p></p>
             </div>
           </div>
-        </div>
-      </div>
-      <div className='modal_footer'>
-        <Button variant='contained' color='error' onClick={handleRemove}>
-          Xóa
-        </Button>
-        <div className='modal_wrapBtn'>
-          <Button
-            variant='outlined'
-            onClick={() => setIsPopup(false)}
-            style={{
-              marginRight: '15px',
-              border: '1px solid rgb(100,100,100)',
-              color: 'rgb(100,100,100)',
-            }}
-          >
-            Hủy
-          </Button>
-          <Button variant='contained' color='success'>
-            Cập nhật
-          </Button>
         </div>
       </div>
     </>

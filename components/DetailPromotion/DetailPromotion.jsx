@@ -1,11 +1,24 @@
 import Button from '@mui/material/Button';
 import React, { useState } from 'react';
 
-const DetailPromotion = ({ data, startDate, endDate, createdAt }) => {
+const DetailPromotion = ({
+  data,
+  startDate,
+  endDate,
+  createdAt,
+  setIsPopup,
+  promotion,
+  id,
+}) => {
   const [activeButton, setActiveButton] = useState('detail');
 
+  const handleRemove = () => {
+    promotion.remove(id);
+    setIsPopup(false);
+  };
+
   return (
-    <div className='modal detailPopup'>
+    <div className='modal'>
       <p className='detail_title'>Detail Information</p>
       <div className='modal_wrap'>
         <div className='detail'>
@@ -87,7 +100,13 @@ const DetailPromotion = ({ data, startDate, endDate, createdAt }) => {
                 </div>
                 <div className='detail_item'>
                   <p>Locked:</p>
-                  <p></p>
+                  <input
+                    className='range'
+                    style={{ width: '30px', height: '20px' }}
+                    type='range'
+                    min='0'
+                    max='1'
+                  ></input>
                 </div>
                 <div className='detail_item'>
                   <p>Người tạo:</p>
@@ -147,12 +166,24 @@ const DetailPromotion = ({ data, startDate, endDate, createdAt }) => {
         </div>
       </div>
       <div className='modal_footer'>
-        <Button variant='contained'>Xóa</Button>
+        <Button variant='contained' color='error' onClick={handleRemove}>
+          Xóa
+        </Button>
         <div className='modal_wrapBtn'>
-          <Button variant='outlined' style={{ marginLeft: '10px' }}>
+          <Button
+            variant='outlined'
+            onClick={() => setIsPopup(false)}
+            style={{
+              marginRight: '15px',
+              border: '1px solid rgb(100,100,100)',
+              color: 'rgb(100,100,100)',
+            }}
+          >
             Hủy
           </Button>
-          <Button variant='contained'>Cập nhật</Button>
+          <Button variant='contained' color='success'>
+            Cập nhật
+          </Button>
         </div>
       </div>
     </div>

@@ -6,20 +6,13 @@ import SearchIcon from '@mui/icons-material/Search';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import CreatePromotion from '../../components/CreatePromotion/CreatePromotion';
 import DetailPromotion from '../../components/DetailPromotion/DetailPromotion';
+import Dialog from '@mui/material/Dialog';
 import Popup from 'reactjs-popup';
 
 export const Promotions = () => {
   const promotions = useTracker(() => Promotion.find({}).fetch());
   const [isStatus, setIsStatus] = useState(promotions);
-
-  const onDelete = _id => {
-    Promotion.remove(_id);
-  };
-
-  const contentStyle = {
-    width: '90%',
-    maxWidth: '900px',
-  };
+  const [isPopup, setIsPopup] = useState(false);
 
   const handleChangeInputSearch = event => {
     const arr = promotions.filter(
@@ -107,55 +100,59 @@ export const Promotions = () => {
             const endDate = new Date(data.endDate);
             const createdAt = new Date(data.createdAt);
             return (
-              <Popup
-                trigger={
-                  <li key={data._id}>
-                    <div className='promotion_list'>
-                      <div className='item item--code item--codeColor'>
-                        {data.code}
-                      </div>
-                      <div className='item item--desc'>{data.description}</div>
-                      <div className='item item--promotionType'>
-                        {data.typeOfPromotion}
-                      </div>
-                      <div className='item item--valueType'>
-                        {data.value.type}
-                      </div>
-                      <div className='item item--value'>
-                        {data.value.maxValue}đ
-                      </div>
-                      <div className='item item--startDate'>
-                        {startDate.getHours()}:{startDate.getMinutes()}:
-                        {startDate.getSeconds()} {startDate.getDate()}/
-                        {startDate.getMonth()}/{startDate.getFullYear()}
-                      </div>
-                      <div className='item item--endDate'>
-                        {endDate.getHours()}:{endDate.getMinutes()}:
-                        {endDate.getSeconds()} {endDate.getDate()}/
-                        {endDate.getMonth()}/{endDate.getFullYear()}
-                      </div>
-                      <div className='item item--number'>0/{data.limit}</div>
-                      <div className='item item--status'>
-                        <span>expired</span>
-                      </div>
-                      <div className='item item--createdAt'>
-                        {createdAt.getHours()}:{createdAt.getMinutes()}:
-                        {createdAt.getSeconds()} {createdAt.getDate()}/
-                        {createdAt.getMonth()}/{createdAt.getFullYear()}
-                      </div>
+              <div key={data._id}>
+                <Button
+                  className='btn_promotion'
+                  variant='outlined'
+                  onClick={() => setIsPopup(true)}
+                >
+                  <div className='promotion_list'>
+                    <div className='item item--code item--codeColor'>
+                      {data.code}
                     </div>
-                  </li>
-                }
-                modal
-                contentStyle={contentStyle}
-              >
-                <DetailPromotion
-                  data={data}
-                  startDate={startDate}
-                  endDate={endDate}
-                  createdAt={createdAt}
-                />
-              </Popup>
+                    <div className='item item--desc'>{data.description}</div>
+                    <div className='item item--promotionType'>
+                      {data.typeOfPromotion}
+                    </div>
+                    <div className='item item--valueType'>
+                      {data.value.type}
+                    </div>
+                    <div className='item item--value'>
+                      {data.value.maxValue}đ
+                    </div>
+                    <div className='item item--startDate'>
+                      {startDate.getHours()}:{startDate.getMinutes()}:
+                      {startDate.getSeconds()} {startDate.getDate()}/
+                      {startDate.getMonth()}/{startDate.getFullYear()}
+                    </div>
+                    <div className='item item--endDate'>
+                      {endDate.getHours()}:{endDate.getMinutes()}:
+                      {endDate.getSeconds()} {endDate.getDate()}/
+                      {endDate.getMonth()}/{endDate.getFullYear()}
+                    </div>
+                    <div className='item item--number'>0/{data.limit}</div>
+                    <div className='item item--status'>
+                      <span>expired</span>
+                    </div>
+                    <div className='item item--createdAt'>
+                      {createdAt.getHours()}:{createdAt.getMinutes()}:
+                      {createdAt.getSeconds()} {createdAt.getDate()}/
+                      {createdAt.getMonth()}/{createdAt.getFullYear()}
+                    </div>
+                  </div>
+                </Button>
+                <Dialog open={isPopup} onClose={() => setIsPopup(false)}>
+                  <DetailPromotion
+                    data={data}
+                    startDate={startDate}
+                    endDate={endDate}
+                    createdAt={createdAt}
+                    setIsPopup={setIsPopup}
+                    promotion={Promotion}
+                    id={data._id}
+                  />
+                </Dialog>
+              </div>
             );
           })}
         </ul>

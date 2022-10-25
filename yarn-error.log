@@ -1,5 +1,5 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Users\Hoa Bui\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add @material-ui/core
+  C:\Program Files\nodejs\node.exe C:\Users\Hoa Bui\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js remove @ant-design/icons
 
 PATH: 
   C:\Program Files\WindowsApps\CanonicalGroupLimited.Ubuntu20.04LTS_2004.5.11.0_x64__79rhkp1fndgsc;"C:\Program Files\OpenJDK\openjdk-11.0.15_10\bin;";C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\ProgramData\chocolatey\bin;C:\Users\Hoa Bui\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Program Files\Java\jdk-16\bin;C:\Users\Hoa Bui\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\Hoa Bui\AppData\Roaming\npm;C:\Users\Hoa Bui\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Users\Hoa Bui\AppData\Local\.meteor\packages
@@ -14,7 +14,7 @@ Platform:
   win32 x64
 
 Trace: 
-  Error: UNKNOWN: unknown error, unlink '\\wsl$\Ubuntu-20.04\home\hoabui\promotion-management\node_modules\@ant-design\icons\BankTwoTone.d.ts'
+  Error: UNKNOWN: unknown error, copyfile 'C:\Users\Hoa Bui\AppData\Local\Yarn\Cache\v6\npm-@mui-icons-material-5.10.9-f9522c49797caf30146acc576e37ecb4f95bbc38-integrity\node_modules\@mui\icons-material\DisplaySettingsOutlined.d.ts' -> '\\wsl$\Ubuntu-20.04\home\hoabui\promotion-management\node_modules\@mui\icons-material\DisplaySettingsOutlined.d.ts'
 
 npm manifest: 
   {
@@ -27,7 +27,6 @@ npm manifest:
       "visualize": "meteor --production --extra-packages bundle-visualizer"
     },
     "dependencies": {
-      "@ant-design/icons": "^4.7.0",
       "@babel/runtime": "^7.17.9",
       "@emotion/react": "^11.10.4",
       "@emotion/styled": "^11.10.4",
@@ -37,7 +36,6 @@ npm manifest:
       "meteor-node-stubs": "^1.2.1",
       "react": "^17.0.2",
       "react-dom": "^17.0.2",
-      "reactjs-popup": "^2.0.5",
       "yarn": "^1.22.19"
     },
     "meteor": {

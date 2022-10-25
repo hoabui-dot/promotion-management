@@ -5,14 +5,15 @@ import Button from '@mui/material/Button';
 import SearchIcon from '@mui/icons-material/Search';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import CreatePromotion from '../../components/CreatePromotion/CreatePromotion';
-import DetailPromotion from '../../components/DetailPromotion/DetailPromotion';
 import Dialog from '@mui/material/Dialog';
-import Popup from 'reactjs-popup';
+import UpdatePromotion from '../../components/DetailPromotion/UpdatePromotion';
+import DetailInformation from '../../components/DetailPromotion/DetailInformation';
 
 export const Promotions = () => {
   const promotions = useTracker(() => Promotion.find({}).fetch());
   const [isStatus, setIsStatus] = useState(promotions);
   const [isPopup, setIsPopup] = useState(false);
+  const [activeButton, setActiveButton] = useState('detail');
 
   const handleChangeInputSearch = event => {
     const arr = promotions.filter(
@@ -142,15 +143,52 @@ export const Promotions = () => {
                   </div>
                 </Button>
                 <Dialog open={isPopup} onClose={() => setIsPopup(false)}>
-                  <DetailPromotion
-                    data={data}
-                    startDate={startDate}
-                    endDate={endDate}
-                    createdAt={createdAt}
-                    setIsPopup={setIsPopup}
-                    promotion={Promotion}
-                    id={data._id}
-                  />
+                  <div className='modal'>
+                    <p className='detail_title'>Detail Information</p>
+                    <div className='modal_wrap'>
+                      <div className='detail'>
+                        <div className='btn_wrapDetail'>
+                          <Button
+                            onClick={() => {
+                              setActiveButton('detail');
+                              setIsPopup(true);
+                            }}
+                            variant='contained'
+                            className={`btn--detail ${
+                              activeButton == 'detail' ? 'active' : ''
+                            }`}
+                          >
+                            Detail Information
+                          </Button>
+                          <Button
+                            onClick={() => {
+                              setActiveButton('update');
+                              setIsPopup(true);
+                            }}
+                            className={`btn--update ${
+                              activeButton == 'update' ? 'active' : ''
+                            }`}
+                            variant='outlined'
+                          >
+                            Update promotion
+                          </Button>
+                        </div>
+                        {activeButton == 'detail' ? (
+                          <DetailInformation
+                            data={data}
+                            startDate={startDate}
+                            endDate={endDate}
+                            createdAt={createdAt}
+                            promotion={Promotion}
+                            setIsPopup={setIsPopup}
+                            id={data._id}
+                          />
+                        ) : (
+                          <UpdatePromotion />
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </Dialog>
               </div>
             );

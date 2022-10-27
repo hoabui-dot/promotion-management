@@ -1,10 +1,10 @@
-import { Field, Form, Formik } from 'formik';
 import Button from '@mui/material/Button';
+import { Field, Formik } from 'formik';
 import React from 'react';
+import moment from 'moment';
 
-const UpdatePromotion = ({ handleRemove, id, setIsPopup, data, promotion }) => {
+const FormPromotion = ({ setOpenDialog, Promotion }) => {
   const currentDate = new Date();
-
   return (
     <div>
       <div className='update_country'>
@@ -13,47 +13,58 @@ const UpdatePromotion = ({ handleRemove, id, setIsPopup, data, promotion }) => {
       </div>
       <Formik
         initialValues={{
-          cities: data.cities,
-          typeOfPromotion: data.typeOfPromotion,
-          code: data.code,
-          startDate: data.startDate,
-          endDate: data.startDate,
-          createdAt: data.createdAt,
-          promotionBy: data.promotionBy,
-          limit: data.limit,
-          typeValue: data.value.type,
-          maxValue: data.value.maxValue,
-          value: data.value.value,
-          target: data.target,
-          description: data.description,
-          locked: data.locked,
+          cities: '',
+          typeOfPromotion: 'BOTH',
+          code: '',
+          startDate: currentDate,
+          applyDate: currentDate,
+          promotionBy: '',
+          subject: '',
+          limit: '',
+          value: 1,
+          typeValue: 'MONEY',
+          maxValue: 0,
+          description: '',
+          locked: false,
         }}
         onSubmit={(values, { setSubmitting }) => {
-          setSubmitting(false);
-          promotion.update(
-            { _id: data._id },
-            {
-              $set: {
-                cities: values.cities,
-                typeOfPromotion: values.typeOfPromotion,
-                code: values.code,
-                startDate: values.startDate,
-                endDate: values.startDate,
-                createdAt: values.createdAt,
-                promotionBy: values.promotionBy,
-                limit: values.limit,
-                value: {
-                  type: values.typeValue,
-                  value: values.value,
-                  maxValue: values.maxValue,
+          setTimeout(() => {
+            setSubmitting(false);
+            Promotion.insert({
+              startDate: new Date(values.startDate),
+              endDate: new Date(values.startDate),
+              userIds: '',
+              limit: values.limit,
+              isFirstBooking: true,
+              taskStartDate: new Date(values.startDate),
+              taskEndDate: new Date(values.startDate),
+              code: values.code,
+              value: {
+                type: values.typeValue,
+                value: values.value,
+                maxValue: values.maxValue,
+                shareWithTasker: {
+                  freeServiceFee: true,
+                  minCostPerHour: 0.2,
                 },
-                target: values.target,
-                description: values.description,
-                locked: values.locked,
               },
-            }
-          );
-          setIsPopup(false);
+              typeOfPromotion: values.typeOfPromotion,
+              target: values.subject,
+              serviceId: '',
+              taskPlace: {
+                city: values.cities,
+                district: '2 District',
+              },
+              createdAt: new Date(values.applyDate),
+              cities: values.cities,
+              isoCode: '',
+              description: values.description,
+              locked: values.locked,
+              promotionBy: values.promotionBy,
+              isTestingGame: true,
+              minOrderValue: 0.2,
+            });
+          }, 400);
         }}
       >
         {({
@@ -103,15 +114,14 @@ const UpdatePromotion = ({ handleRemove, id, setIsPopup, data, promotion }) => {
                   <Field
                     as='select'
                     name='typeOfPromotion'
-                    placeholder='BOTH'
                     className='form_select'
                     onChange={handleChange}
                     onBlur={handleBlur}
                     value={values.typeOfPromotion}
                   >
-                    <option value='both'>BOTH</option>
-                    <option value='tasker'>TASKER</option>
-                    <option value='user'>USER</option>
+                    <option value='BOTH'>BOTH</option>
+                    <option value='NEW'>NEW</option>
+                    <option value='CURRENT'>CURRENT</option>
                   </Field>
                 </div>
                 <div className='form_item'>
@@ -132,8 +142,8 @@ const UpdatePromotion = ({ handleRemove, id, setIsPopup, data, promotion }) => {
                   <Field
                     type='date'
                     className='form_date'
-                    name='createdAt'
-                    value={values.createdAt}
+                    name='applyDate'
+                    value={values.applyDate}
                   />
                 </div>
                 <div className='form_item'>
@@ -147,13 +157,13 @@ const UpdatePromotion = ({ handleRemove, id, setIsPopup, data, promotion }) => {
                         name='promotionBy'
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        value='btaskee'
+                        value='bstakee'
                       />{' '}
                       BTASKEE
                     </label>
                     <label htmlFor='radio_tasker'>
                       <Field
-                        id='radio_taskers'
+                        id='radio_tasker'
                         type='radio'
                         className='form_radio'
                         name='promotionBy'
@@ -173,7 +183,7 @@ const UpdatePromotion = ({ handleRemove, id, setIsPopup, data, promotion }) => {
                         id='radio_bTaskee'
                         type='radio'
                         className='form_radio'
-                        name='target'
+                        name='subject'
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value='both'
@@ -185,7 +195,7 @@ const UpdatePromotion = ({ handleRemove, id, setIsPopup, data, promotion }) => {
                         id='radio_tasker'
                         type='radio'
                         className='form_radio'
-                        name='target'
+                        name='subject'
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value='asker'
@@ -197,7 +207,7 @@ const UpdatePromotion = ({ handleRemove, id, setIsPopup, data, promotion }) => {
                         id='radio_tasker'
                         type='radio'
                         className='form_radio'
-                        name='target'
+                        name='subject'
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value='tasker'
@@ -243,8 +253,8 @@ const UpdatePromotion = ({ handleRemove, id, setIsPopup, data, promotion }) => {
                     <p className='form_label'>Loại giá trị</p>
                     <Field
                       as='select'
-                      className='form_select'
                       name='typeValue'
+                      className='form_select'
                       value={values.typeValue}
                     >
                       <option value='MONEY'>MONEY</option>
@@ -262,7 +272,7 @@ const UpdatePromotion = ({ handleRemove, id, setIsPopup, data, promotion }) => {
                   </div>
                 </div>
                 <label className='blocked'>
-                  <Field type='checkbox' name='locked' /> <span>Locked</span>
+                  <Field type='checkbox' name='locked' /> <span> Locked</span>
                 </label>
               </div>
             </div>
@@ -278,35 +288,27 @@ const UpdatePromotion = ({ handleRemove, id, setIsPopup, data, promotion }) => {
                 className='form_textarea'
               />
             </div>
-            <div className='modal_footer'>
+            <div className='modal_wrapBtn'>
               <Button
-                variant='contained'
-                color='error'
-                onClick={() => handleRemove(id)}
+                variant='outlined'
+                onClick={() => setOpenDialog(false)}
+                style={{
+                  marginRight: '15px',
+                  border: '1px solid rgb(100,100,100)',
+                  color: 'rgb(100,100,100)',
+                }}
               >
-                Xóa
+                Cancel
               </Button>
-              <div className='modal_wrapBtn'>
-                <Button
-                  variant='outlined'
-                  onClick={() => setIsPopup(false)}
-                  style={{
-                    marginRight: '15px',
-                    border: '1px solid rgb(100,100,100)',
-                    color: 'rgb(100,100,100)',
-                  }}
-                >
-                  Hủy
-                </Button>
-                <Button
-                  type='submit'
-                  disabled={isSubmitting}
-                  variant='contained'
-                  color='success'
-                >
-                  Cập nhật
-                </Button>
-              </div>
+              <Button
+                type='submit'
+                disabled={isSubmitting}
+                variant='contained'
+                color='success'
+                onClick={() => setOpenDialog(false)}
+              >
+                Submit
+              </Button>
             </div>
           </form>
         )}
@@ -315,4 +317,4 @@ const UpdatePromotion = ({ handleRemove, id, setIsPopup, data, promotion }) => {
   );
 };
 
-export default UpdatePromotion;
+export default FormPromotion;

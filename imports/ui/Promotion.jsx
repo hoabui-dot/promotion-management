@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
 import { Promotion } from '../api/promotion';
 import Button from '@mui/material/Button';
@@ -6,29 +6,30 @@ import SearchIcon from '@mui/icons-material/Search';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import CreatePromotion from '../../components/CreatePromotion/CreatePromotion';
 import Dialog from '@mui/material/Dialog';
-import UpdatePromotion from '../../components/DetailPromotion/UpdatePromotion';
 import DetailInformation from '../../components/DetailPromotion/DetailInformation';
+import UpdatePromotion from '../../components/DetailPromotion/UpdatePromotion';
+import moment from 'moment';
+import ConfirmRemove from '../../components/ConfirmRemove/ConfirmRemove';
 
 export const Promotions = () => {
-  const promotions = useTracker(() => Promotion.find({}).fetch());
-  const [isStatus, setIsStatus] = useState(promotions);
+  let promotions = useTracker(() => Promotion.find({}).fetch());
+  const [result, setResult] = useState(0);
+  const [filterBy, setFilterBy] = useState('');
   const [isPopup, setIsPopup] = useState(false);
   const [activeButton, setActiveButton] = useState('detail');
+  const [modalData, setModalData] = useState({});
+  const [confirmCancelButton, setConfirmCancelButton] = useState(false);
 
-  const handleChangeInputSearch = event => {
-    const arr = promotions.filter(
-      data => data.value.type === event.target.value
+  useEffect(() => {
+    setResult(
+      promotions.filter(promotion =>
+        filterBy
+          ? promotion.code.includes(filterBy) ||
+            promotion.description.includes(filterBy)
+          : true
+      ).length
     );
-    if (arr !== []) {
-      setIsStatus(arr);
-    } else {
-      setIsStatus(promotions);
-    }
-  };
-  const handleRemove = id => {
-    Promotion.remove(id);
-    setIsPopup(false);
-  };
+  }, [promotions]);
 
   return (
     <div className='container'>
@@ -60,7 +61,7 @@ export const Promotions = () => {
           List single promotion
         </Button>
         <div className='filter_createPromotion'>
-          <CreatePromotion />
+          <CreatePromotion Promotion={Promotion} />
         </div>
       </div>
       <div className='promotion_filter'>
@@ -73,14 +74,16 @@ export const Promotions = () => {
           </select>
         </div>
         <input
-          onChange={e => handleChangeInputSearch(e)}
+          onChange={e => {
+            setFilterBy(e.target.value);
+          }}
           style={{ marginLeft: '10px' }}
           placeholder='Mã ưu đãi'
         />
         <Button className='btn_search' variant='contained' color='success'>
           <SearchIcon />
         </Button>
-        <div className='filter_result'>10 kết quả</div>
+        <div className='filter_result'>{result} kết quả</div>
       </div>
       <div className='promotion_wrap'>
         <ul className='promotion promotion--title'>
@@ -100,128 +103,130 @@ export const Promotions = () => {
           </li>
         </ul>
         <ul className='promotion'>
-          {promotions.map(data => {
-            const startDate = new Date(data.startDate);
-            const endDate = new Date(data.endDate);
-            const createdAt = new Date(data.createdAt);
-            return (
-              <div key={data._id}>
-                <Button
-                  className='btn_promotion'
-                  variant='outlined'
-                  onClick={() => setIsPopup(true)}
-                >
-                  <div className='promotion_list'>
-                    <div className='item item--code item--codeColor'>
-                      {data.code}
-                    </div>
-                    <div className='item item--desc'>{data.description}</div>
-                    <div className='item item--promotionType'>
-                      {data.typeOfPromotion}
-                    </div>
-                    <div className='item item--valueType'>
-                      {data.value.type}
-                    </div>
-                    <div className='item item--value'>
-                      {data.value.maxValue}đ
-                    </div>
-                    <div className='item item--startDate'>
-                      {startDate.getHours()}:{startDate.getMinutes()}:
-                      {startDate.getSeconds()} {startDate.getDate()}/
-                      {startDate.getMonth()}/{startDate.getFullYear()}
-                    </div>
-                    <div className='item item--endDate'>
-                      {endDate.getHours()}:{endDate.getMinutes()}:
-                      {endDate.getSeconds()} {endDate.getDate()}/
-                      {endDate.getMonth()}/{endDate.getFullYear()}
-                    </div>
-                    <div className='item item--number'>0/{data.limit}</div>
-                    <div className='item item--status'>
-                      <span>expired</span>
-                    </div>
-                    <div className='item item--createdAt'>
-                      {createdAt.getHours()}:{createdAt.getMinutes()}:
-                      {createdAt.getSeconds()} {createdAt.getDate()}/
-                      {createdAt.getMonth()}/{createdAt.getFullYear()}
-                    </div>
-                  </div>
-                </Button>
-                <Dialog open={isPopup} onClose={() => setIsPopup(false)}>
-                  <div className='modal'>
-                    <p className='detail_title'>Detail Information</p>
-                    <div className='modal_wrap'>
-                      <div className='detail'>
-                        <div className='btn_wrapDetail'>
-                          <Button
-                            onClick={() => {
-                              setActiveButton('detail');
-                              setIsPopup(true);
-                            }}
-                            variant='contained'
-                            className={`btn--detail ${
-                              activeButton == 'detail' ? 'active' : ''
-                            }`}
-                          >
-                            Detail Information
-                          </Button>
-                          <Button
-                            onClick={() => {
-                              setActiveButton('update');
-                              setIsPopup(true);
-                            }}
-                            className={`btn--update ${
-                              activeButton == 'update' ? 'active' : ''
-                            }`}
-                            variant='outlined'
-                          >
-                            Update promotion
-                          </Button>
-                        </div>
-                        {activeButton == 'detail' ? (
-                          <DetailInformation
-                            data={data}
-                            startDate={startDate}
-                            endDate={endDate}
-                            createdAt={createdAt}
-                            promotion={Promotion}
-                            setIsPopup={setIsPopup}
-                            id={data._id}
-                          />
-                        ) : (
-                          <UpdatePromotion />
-                        )}
-                        <div className='modal_footer'>
-                          <Button
-                            variant='contained'
-                            color='error'
-                            onClick={() => handleRemove(data._id)}
-                          >
-                            Xóa
-                          </Button>
-                          <div className='modal_wrapBtn'>
-                            <Button
-                              variant='outlined'
-                              onClick={() => setIsPopup(false)}
-                              style={{
-                                marginRight: '15px',
-                                border: '1px solid rgb(100,100,100)',
-                                color: 'rgb(100,100,100)',
-                              }}
-                            >
-                              Hủy
-                            </Button>
-                            <Button variant='contained' color='success'>
-                              Cập nhật
-                            </Button>
-                          </div>
-                        </div>
+          {promotions
+            .filter(promotion =>
+              filterBy
+                ? promotion.code.includes(filterBy) ||
+                  promotion.description.includes(filterBy)
+                : true
+            )
+            .map(data => {
+              return (
+                <div key={data._id}>
+                  <Button
+                    className='btn_promotion'
+                    variant='outlined'
+                    onClick={() => {
+                      setIsPopup(true);
+                      setModalData(data);
+                    }}
+                  >
+                    <div className='promotion_list'>
+                      <div className='item item--code item--codeColor'>
+                        {data.code}
+                      </div>
+                      <div className='item item--desc'>{data.description}</div>
+                      <div className='item item--promotionType'>
+                        {data.typeOfPromotion}
+                      </div>
+                      <div className='item item--valueType'>
+                        {data.value.type}
+                      </div>
+                      <div className='item item--value'>
+                        {new Intl.NumberFormat().format(data.value.value)} đ
+                      </div>
+                      <div className='item item--startDate'>
+                        {moment(data.startDate).hours()}:
+                        {moment(data.startDate).minutes()}:
+                        {moment(data.startDate).seconds()}{' '}
+                        {moment(data.startDate).date()}/
+                        {moment(data.startDate).month()}/
+                        {moment(data.startDate).year()}
+                      </div>
+                      <div className='item item--endDate'>
+                        {moment(data.endDate).hours()}:
+                        {moment(data.endDate).minutes()}:
+                        {moment(data.endDate).seconds()}{' '}
+                        {moment(data.endDate).date()}/
+                        {moment(data.endDate).month()}/
+                        {moment(data.endDate).year()}
+                      </div>
+                      <div className='item item--number'>0/{data.limit}</div>
+                      <div className='item item--status'>
+                        <span>expired</span>
+                      </div>
+                      <div className='item item--createdAt'>
+                        {moment(data.createdAt).hours()}:
+                        {moment(data.createdAt).minutes()}:
+                        {moment(data.createdAt).seconds()}{' '}
+                        {moment(data.createdAt).date()}/
+                        {moment(data.createdAt).month()}/
+                        {moment(data.createdAt).year()}
                       </div>
                     </div>
+                  </Button>
+                </div>
+              );
+            })}
+          <Dialog open={isPopup} onClose={() => setIsPopup(false)}>
+            <div className='modal'>
+              <p className='detail_title'>Detail Information</p>
+              <div className='modal_wrap'>
+                <div className='detail'>
+                  <div className='btn_wrapDetail'>
+                    <Button
+                      onClick={() => {
+                        setActiveButton('detail');
+                        setIsPopup(true);
+                      }}
+                      variant='contained'
+                      className={`btn--detail ${
+                        activeButton == 'detail' ? 'active' : ''
+                      }`}
+                    >
+                      Detail Information
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setActiveButton('update');
+                        setIsPopup(true);
+                      }}
+                      className={`btn--update ${
+                        activeButton == 'update' ? 'active' : ''
+                      }`}
+                      variant='outlined'
+                    >
+                      Update promotion
+                    </Button>
                   </div>
-                </Dialog>
+                  {activeButton == 'detail' ? (
+                    <DetailInformation
+                      data={modalData}
+                      createdAt={modalData.createdAt}
+                      setIsPopup={setIsPopup}
+                      id={modalData._id}
+                      setConfirmCancelButton={setConfirmCancelButton}
+                      setActiveButton={setActiveButton}
+                    />
+                  ) : (
+                    <UpdatePromotion
+                      id={modalData._id}
+                      setIsPopup={setIsPopup}
+                      data={modalData}
+                      promotion={Promotion}
+                    />
+                  )}
+                </div>
               </div>
-            );
-          })}
+            </div>
+          </Dialog>
+          <ConfirmRemove
+            confirmCancelButton={confirmCancelButton}
+            setConfirmCancelButton={setConfirmCancelButton}
+            promotion={Promotion}
+            id={modalData._id}
+            setIsPopup={setIsPopup}
+          />
         </ul>
       </div>
     </div>

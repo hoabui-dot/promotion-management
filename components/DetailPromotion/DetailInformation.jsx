@@ -3,12 +3,10 @@ import Button from '@mui/material/Button';
 
 const DetailInformation = ({
   data,
-  startDate,
-  endDate,
   createdAt,
-  promotion,
+  setConfirmCancelButton,
+  setActiveButton,
   setIsPopup,
-  id,
 }) => {
   return (
     <>
@@ -51,11 +49,13 @@ const DetailInformation = ({
               <p>Dọn dẹp nhà</p>
             </div>
             <div className='detail_item'>
-              <p>Bắt đầu - kết thúc:</p>
               <p>
-                {startDate.getDate()}/{startDate.getMonth()}/
-                {startDate.getFullYear()} - {endDate.getDate()}/
-                {endDate.getMonth()}/{endDate.getFullYear()}
+                Bắt đầu: <br /> kết thúc:
+              </p>
+              <p>
+                {data.startDate.getDate()}/{data.startDate.getMonth()}/
+                {data.startDate.getFullYear()} <br /> {data.endDate.getDate()}/
+                {data.endDate.getMonth()}/{data.endDate.getFullYear()}
               </p>
             </div>
             <div className='detail_item'>
@@ -131,6 +131,35 @@ const DetailInformation = ({
               <p></p>
             </div>
           </div>
+        </div>
+      </div>
+      <div className='modal_footer'>
+        <Button
+          variant='contained'
+          color='error'
+          onClick={() => setConfirmCancelButton(true)}
+        >
+          Xóa
+        </Button>
+        <div className='modal_wrapBtn'>
+          <Button
+            variant='outlined'
+            onClick={() => setIsPopup(false)}
+            style={{
+              marginRight: '15px',
+              border: '1px solid rgb(100,100,100)',
+              color: 'rgb(100,100,100)',
+            }}
+          >
+            Hủy
+          </Button>
+          <Button
+            variant='contained'
+            color='success'
+            onClick={() => setActiveButton('update')}
+          >
+            Cập nhật
+          </Button>
         </div>
       </div>
     </>

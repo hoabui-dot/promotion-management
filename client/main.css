@@ -1,8 +1,7 @@
 body {
   padding: 10px;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Nunito Sans', sans-serif;
   margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
   font-size: 14px;
   background-color: #f8fcff;
 }
@@ -105,9 +104,9 @@ body {
   margin-left: 18px;
 }
 .item {
-  width: 130px;
-  max-width: 130px;
-  min-width: 130px;
+  width: 140px;
+  max-width: 140px;
+  min-width: 140px;
   padding-bottom: 5px;
 }
 
@@ -260,9 +259,11 @@ body {
   justify-content: space-between;
 }
 .detail_item p:last-child {
+  text-align: right;
   font-weight: bold;
 }
 .detail_item p {
+  display: inline-block;
   margin: 0;
   margin-bottom: 7px;
 }
@@ -271,9 +272,6 @@ body {
   font-weight: bold;
   margin-bottom: 15px;
   border-bottom: 1px solid rgb(160, 160, 160);
-}
-.css-yiavyu-MuiBackdrop-root-MuiDialog-backdrop {
-  background-color: rgba(72, 72, 72, 6%) !important;
 }
 .css-1t1j96h-MuiPaper-root-MuiDialog-paper {
   width: 100vw;
@@ -372,7 +370,7 @@ input[type='range']::-webkit-slider-thumb {
   font-weight: bold;
   color: rgb(100, 100, 100);
 }
-.wrap_radio label:last-child {
+.wrap_radio label:not(:first-child) {
   margin-left: 20px;
 }
 .form_value {
@@ -399,4 +397,8 @@ input[type='range']::-webkit-slider-thumb {
   border: 1px solid #ccc;
   outline: none;
   margin-bottom: 5px;
+}
+.modal_wrapBtn {
+  display: flex;
+  justify-content: right;
 }

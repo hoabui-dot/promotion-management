@@ -1,10 +1,21 @@
 import Button from '@mui/material/Button';
 import { Field, Formik } from 'formik';
 import React from 'react';
-import moment from 'moment';
 
-const FormPromotion = ({ setOpenDialog, Promotion }) => {
+const FormPromotion = ({ setOpenDialog, Promotion, promotionData }) => {
   const currentDate = new Date();
+
+  function validateCode(value) {
+    let error;
+    promotionData.map(data => {
+      if (data.code == value) {
+        error = 'code has been duplicated !';
+        return;
+      }
+    });
+    return error;
+  }
+
   return (
     <div>
       <div className='update_country'>
@@ -20,7 +31,7 @@ const FormPromotion = ({ setOpenDialog, Promotion }) => {
           applyDate: currentDate,
           promotionBy: '',
           subject: '',
-          limit: '',
+          limit: 1,
           value: 1,
           typeValue: 'MONEY',
           maxValue: 0,
@@ -105,7 +116,11 @@ const FormPromotion = ({ setOpenDialog, Promotion }) => {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     value={values.code}
+                    validate={validateCode}
                   />
+                  {errors.code && touched.code && (
+                    <div className='error_message'>{errors.code}</div>
+                  )}
                 </div>
                 <div className='form_item'>
                   <p className='form_label'>
@@ -305,7 +320,7 @@ const FormPromotion = ({ setOpenDialog, Promotion }) => {
                 disabled={isSubmitting}
                 variant='contained'
                 color='success'
-                onClick={() => setOpenDialog(false)}
+                onClick={() => !errors.code && setOpenDialog(false)}
               >
                 Submit
               </Button>

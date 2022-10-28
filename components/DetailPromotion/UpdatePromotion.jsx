@@ -2,9 +2,31 @@ import { Field, Form, Formik } from 'formik';
 import Button from '@mui/material/Button';
 import React from 'react';
 
-const UpdatePromotion = ({ handleRemove, id, setIsPopup, data, promotion }) => {
-  const currentDate = new Date();
-
+const UpdatePromotion = ({
+  setIsPopup,
+  data,
+  promotion,
+  promotionData,
+  indexPromotion,
+  setConfirmCancelButton,
+}) => {
+  function validateValue(value) {
+    let error;
+    if (value > 50000) {
+      error = 'Value must be less than 50.000 ?';
+    }
+    return error;
+  }
+  function validateCode(value) {
+    let error;
+    promotionData.map((item, idx) => {
+      if (item.code == value && idx !== indexPromotion) {
+        error = 'code has been duplicated !';
+        return;
+      }
+    });
+    return error;
+  }
   return (
     <div>
       <div className='update_country'>
@@ -94,7 +116,11 @@ const UpdatePromotion = ({ handleRemove, id, setIsPopup, data, promotion }) => {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     value={values.code}
+                    validate={validateCode}
                   />
+                  {errors.code && touched.code && (
+                    <div className='error_message'>{errors.code}</div>
+                  )}
                 </div>
                 <div className='form_item'>
                   <p className='form_label'>
@@ -258,7 +284,11 @@ const UpdatePromotion = ({ handleRemove, id, setIsPopup, data, promotion }) => {
                       name='value'
                       className='form_input'
                       value={values.value}
+                      validate={validateValue}
                     />
+                    {errors.value && touched.value && (
+                      <div className='error_message'>{errors.value}</div>
+                    )}
                   </div>
                 </div>
                 <label className='blocked'>
@@ -282,7 +312,7 @@ const UpdatePromotion = ({ handleRemove, id, setIsPopup, data, promotion }) => {
               <Button
                 variant='contained'
                 color='error'
-                onClick={() => handleRemove(id)}
+                onClick={() => setConfirmCancelButton(true)}
               >
                 Xóa
               </Button>

@@ -19,6 +19,7 @@ export const Promotions = () => {
   const [activeButton, setActiveButton] = useState('detail');
   const [modalData, setModalData] = useState({});
   const [confirmCancelButton, setConfirmCancelButton] = useState(false);
+  const [indexPromotion, setIndexPromotion] = useState(0);
 
   useEffect(() => {
     setResult(
@@ -61,7 +62,7 @@ export const Promotions = () => {
           List single promotion
         </Button>
         <div className='filter_createPromotion'>
-          <CreatePromotion Promotion={Promotion} />
+          <CreatePromotion promotion={Promotion} promotionData={promotions} />
         </div>
       </div>
       <div className='promotion_filter'>
@@ -75,7 +76,7 @@ export const Promotions = () => {
         </div>
         <input
           onChange={e => {
-            setFilterBy(e.target.value);
+            setTimeout(() => setFilterBy(e.target.value), 1000);
           }}
           style={{ marginLeft: '10px' }}
           placeholder='Mã ưu đãi'
@@ -110,7 +111,7 @@ export const Promotions = () => {
                   promotion.description.includes(filterBy)
                 : true
             )
-            .map(data => {
+            .map((data, index) => {
               return (
                 <div key={data._id}>
                   <Button
@@ -119,6 +120,7 @@ export const Promotions = () => {
                     onClick={() => {
                       setIsPopup(true);
                       setModalData(data);
+                      setIndexPromotion(index);
                     }}
                   >
                     <div className='promotion_list'>
@@ -168,7 +170,13 @@ export const Promotions = () => {
                 </div>
               );
             })}
-          <Dialog open={isPopup} onClose={() => setIsPopup(false)}>
+          <Dialog
+            open={isPopup}
+            onClose={() => {
+              setIsPopup(false);
+              setActiveButton('detail');
+            }}
+          >
             <div className='modal'>
               <p className='detail_title'>Detail Information</p>
               <div className='modal_wrap'>
@@ -204,16 +212,17 @@ export const Promotions = () => {
                       data={modalData}
                       createdAt={modalData.createdAt}
                       setIsPopup={setIsPopup}
-                      id={modalData._id}
                       setConfirmCancelButton={setConfirmCancelButton}
                       setActiveButton={setActiveButton}
                     />
                   ) : (
                     <UpdatePromotion
-                      id={modalData._id}
                       setIsPopup={setIsPopup}
                       data={modalData}
                       promotion={Promotion}
+                      promotionData={promotions}
+                      indexPromotion={indexPromotion}
+                      setConfirmCancelButton={setConfirmCancelButton}
                     />
                   )}
                 </div>

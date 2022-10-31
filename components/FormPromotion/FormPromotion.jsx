@@ -1,8 +1,9 @@
 import Button from '@mui/material/Button';
 import { Field, Formik } from 'formik';
 import React from 'react';
+import { Meteor } from 'meteor/meteor';
 
-const FormPromotion = ({ setOpenDialog, Promotion, promotionData }) => {
+const FormPromotion = ({ setOpenDialog, promotionData }) => {
   const currentDate = new Date();
 
   function validateCode(value) {
@@ -32,19 +33,21 @@ const FormPromotion = ({ setOpenDialog, Promotion, promotionData }) => {
           promotionBy: '',
           subject: '',
           limit: 1,
-          value: 1,
+          value: 0,
           typeValue: 'MONEY',
           maxValue: 0,
           description: '',
           locked: false,
         }}
         onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
-            setSubmitting(false);
-            Promotion.insert({
+          setSubmitting(false);
+          console.log(values);
+          Meteor.call(
+            'insert.promotion',
+            {
               startDate: new Date(values.startDate),
               endDate: new Date(values.startDate),
-              userIds: '',
+              userIds: [],
               limit: values.limit,
               isFirstBooking: true,
               taskStartDate: new Date(values.startDate),
@@ -53,19 +56,15 @@ const FormPromotion = ({ setOpenDialog, Promotion, promotionData }) => {
               value: {
                 type: values.typeValue,
                 value: values.value,
-                maxValue: values.maxValue,
-                shareWithTasker: {
-                  freeServiceFee: true,
-                  minCostPerHour: 0.2,
-                },
+                maxValue: values.value,
               },
               typeOfPromotion: values.typeOfPromotion,
               target: values.subject,
               serviceId: '',
-              taskPlace: {
-                city: values.cities,
-                district: '2 District',
-              },
+              // taskPlace: {
+              //   city: values.cities,
+              //   district: '2 District',
+              // },
               createdAt: new Date(values.applyDate),
               cities: values.cities,
               isoCode: '',
@@ -74,8 +73,15 @@ const FormPromotion = ({ setOpenDialog, Promotion, promotionData }) => {
               promotionBy: values.promotionBy,
               isTestingGame: true,
               minOrderValue: 0.2,
-            });
-          }, 400);
+            },
+            (err, res) => {
+              if (err) {
+                alert(err);
+              } else {
+                alert('Create Promotion Successfully !');
+              }
+            }
+          );
         }}
       >
         {({

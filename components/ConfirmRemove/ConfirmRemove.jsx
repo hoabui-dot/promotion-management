@@ -2,6 +2,7 @@ import React from 'react';
 import Dialog from '@mui/material/Dialog';
 import Button from '@mui/material/Button';
 import './ConfirmRemove.module.css';
+import { Meteor } from 'meteor/meteor';
 
 const ConfirmRemove = ({
   id,
@@ -11,7 +12,9 @@ const ConfirmRemove = ({
   setIsPopup,
 }) => {
   const handleRemove = id => {
-    promotion.remove(id);
+    Meteor.call('remove.promotion', id, (err, res) => {
+      err ? alert(err) : alert('Remove Promotion Successfully !');
+    });
     setIsPopup(false);
     setConfirmCancelButton(false);
   };
